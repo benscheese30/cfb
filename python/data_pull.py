@@ -1,5 +1,5 @@
 import cfbd
-from py.cfb import cfbd_signin
+from py.cfbd import cfbd_signin
 
 # signing into api
 api = cfbd_signin()
