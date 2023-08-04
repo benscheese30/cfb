@@ -3,3 +3,4 @@ polars
 pyarrow
 pandas
 psycopg2-binary
+requests
