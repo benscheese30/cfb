@@ -42,7 +42,7 @@ games_sql = """
         away_pregame_elo float,
         away_postgame_elo float,
         excitement_index float
-)        
+    )        
 """
 
 # create a table in postgres
