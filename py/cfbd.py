@@ -3,6 +3,7 @@ import os
 import requests
 import logging
 import json
+import time
 
 # setup logging message with timestamp
 logging.basicConfig(
@@ -31,6 +32,8 @@ def get_data(endpoint, params):
     else:
         logging.error(f"Error {data.status_code} in {endpoint} with params {params}. Reason: {data.reason}")
         return None
+
+    time.sleep(5)
 
 def get_params(endpoint, js="resources/cfbd_endpoint_details.json"):
     with open(js, "r") as f:
