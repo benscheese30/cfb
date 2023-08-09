@@ -18,13 +18,18 @@ def pull_60in60_list(year, url):
     story_body_element = driver.find_element(By.CLASS_NAME, "story_body")
     paragraph_elements = story_body_element.find_elements(By.TAG_NAME, "p")
 
-    # extracting player names from list
-    # and only if team names are in the list ("BYU", "Utah", "USU", "Weber", "SUU")
-    player_names = []
-    for p in paragraph_elements:
-     if ("BYU" in p.text or "Utah" in p.text or "USU" in p.text or "Weber" in p.text or "SUU" in p.text) and any(str(i) in p.text for i in range(1, 61)):
-         player_names.append(p.text)
-
+    player_names = [
+        p.text
+        for p in paragraph_elements
+        if (
+            "BYU" in p.text
+            or "Utah" in p.text
+            or "USU" in p.text
+            or "Weber" in p.text
+            or "SUU" in p.text
+        )
+        and any(str(i) in p.text for i in range(1, 61))
+    ]
     # closing connection to url
     driver.close()
 
