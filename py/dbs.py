@@ -3,14 +3,13 @@ import time
 
 def postgres_connect():
     try:
-        conn = psycopg2.connect(
+        return psycopg2.connect(
             host="localhost",
             port= 5432,
             database="postgresdb",
             user="admin",
             password="password"
         )
-        return conn
     except (Exception, psycopg2.Error) as error:
         print("Error while connecting to PostgreSQL", error)
 
@@ -33,13 +32,13 @@ def data_insert(tbl, raw_dict):
         conn.autocommit = True
         with conn.cursor() as curs:
             while row < rows:
-                for i, d in enumerate(raw_dict):
+                for d in raw_dict:
                     # create a list of values from the dictionary
                     values = list(d.values())
                     # create a list of column names from the dictionary
                     columns = list(d.keys())
                     # create a string of %s for the number of columns
-                    s = ','.join(['%s' for i in range(len(columns))])
+                    s = ','.join(['%s' for _ in range(len(columns))])
                     # create a string of column names
                     cols = ','.join(columns)
                     # create the sql statement
