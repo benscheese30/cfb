@@ -55,7 +55,11 @@ def pull_60in60_list(year, url):
      })
 
     # inserting data into postgres
-    dbs.data_insert("cfb_60in60", player_list)
+    dbs.data_insert(
+        schema="cfb",
+        tbl="cfb_60in60",
+        raw_dict=player_list
+    )
 
 # only run if not already created
 # creating table in postgres
@@ -71,5 +75,5 @@ sql = """
 dbs.postgres_create_table(sql)
 
 # get player list for each year
-for year, url in urls.items():
-    pull_60in60_list(year, url)
+for yr, url in urls.items():
+    pull_60in60_list(yr, url)
