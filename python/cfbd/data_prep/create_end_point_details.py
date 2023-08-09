@@ -16,13 +16,10 @@ def endpoint_details():
         path_base = paths[k]["get"]
         # get parameters
         if "parameters" in path_base:
-            params = {}
-            # get parameter names and data types
-            for p in path_base["parameters"]:
-                params[p["name"]] = {
-                    "type": p["type"],
-                    "required": p["required"]
-                }
+            params = {
+                p["name"]: {"type": p["type"], "required": p["required"]}
+                for p in path_base["parameters"]
+            }
         # add to dictionary
         endpoint_dict[k] = {
             "params": params

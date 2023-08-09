@@ -29,11 +29,10 @@ def get_data(endpoint, params):
 
     if data.status_code == 200:
         return data.json()
-    else:
-        logging.error(f"Error {data.status_code} in {endpoint} with params {params}. Reason: {data.reason}")
-        return None
+    logging.error(f"Error {data.status_code} in {endpoint} with params {params}. Reason: {data.reason}")
+    return None
 
-    time.sleep(5)
+time.sleep(5)
 
 def get_params(endpoint, js="resources/cfbd_endpoint_details.json"):
     with open(js, "r") as f:
