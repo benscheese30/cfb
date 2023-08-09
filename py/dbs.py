@@ -21,7 +21,7 @@ def postgres_create_table(sql):
             curs.execute(sql)
 
 
-def data_insert(tbl, raw_dict):
+def data_insert(schema, tbl, raw_dict):
     # add timer from start to finish
     tic = time.perf_counter()
     row = 0
@@ -42,7 +42,7 @@ def data_insert(tbl, raw_dict):
                     # create a string of column names
                     cols = ','.join(columns)
                     # create the sql statement
-                    sql = f'insert into cfb.{tbl} ({cols}) values ({s})'
+                    sql = f'insert into {schema}.{tbl} ({cols}) values ({s})'
                     # execute the sql statement
                     curs.execute(sql, values)
                     row += 1
@@ -50,11 +50,11 @@ def data_insert(tbl, raw_dict):
             print(f"inserted {row} rows in {toc - tic:0.4f} seconds")
 
 
-def data_pull(tbl):
+def data_pull(schema="cfb", tbl=None):
     with postgres_connect() as conn:
         conn.autocommit = True
         with conn.cursor() as curs:
-            curs.execute(f'select * from cfb.{tbl}')
+            curs.execute(f'select * from {schema}.{tbl}')
             dt = curs.fetchall()
             dt = [dict(zip([c[0] for c in curs.description], g)) for g in dt]
     return dt
