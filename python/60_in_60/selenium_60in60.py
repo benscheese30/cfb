@@ -22,10 +22,8 @@ def pull_60in60_list(year, url):
     # and only if team names are in the list ("BYU", "Utah", "USU", "Weber", "SUU")
     player_names = []
     for p in paragraph_elements:
-     if "BYU" in p.text or "Utah" in p.text or "USU" in p.text or "Weber" in p.text or "SUU" in p.text:
-         # if p also contains a number (1-60), then it is a player name
-         if any(str(i) in p.text for i in range(1, 61)):
-             player_names.append(p.text)
+     if ("BYU" in p.text or "Utah" in p.text or "USU" in p.text or "Weber" in p.text or "SUU" in p.text) and any(str(i) in p.text for i in range(1, 61)):
+         player_names.append(p.text)
 
     # closing connection to url
     driver.close()
