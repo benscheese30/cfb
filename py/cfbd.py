@@ -17,9 +17,12 @@ def signin():
     config.api_key_prefix['Authorization'] = 'Bearer'
     return cfbd.ApiClient(config)
 
-def get_data(endpoint, params):
+def get_data(endpoint, params=None):
     url = "https://api.collegefootballdata.com"
     headers = {"Authorization": f"Bearer {os.environ['CFBD_API_KEY']}"}
+
+    if params is None:
+        params = {}
 
     data = requests.get(
         url=f'{url}{endpoint}',
@@ -32,7 +35,7 @@ def get_data(endpoint, params):
     logging.error(f"Error {data.status_code} in {endpoint} with params {params}. Reason: {data.reason}")
     return None
 
-time.sleep(5)
+    time.sleep(5)
 
 def get_params(endpoint, js="resources/cfbd_endpoint_details.json"):
     with open(js, "r") as f:
