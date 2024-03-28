@@ -77,3 +77,4 @@ dbs.postgres_create_table(sql)
 # get player list for each year
 for yr, url in urls.items():
     pull_60in60_list(yr, url)
+
