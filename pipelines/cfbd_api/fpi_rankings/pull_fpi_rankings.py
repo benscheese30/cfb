@@ -9,8 +9,6 @@ fpi_rankings = cfbd.get_data(
     params={"year": 2024}
 )
 
-open("fpi_rankings.json", "w").write(json.dumps(fpi_rankings))
-
 # upload to s3
 s3 = aws.aws_client(
     aws.aws_config(service="s3", localstack=True)
