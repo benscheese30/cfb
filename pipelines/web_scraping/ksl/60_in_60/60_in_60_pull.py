@@ -1,19 +1,14 @@
-from selenium import webdriver
+from utils.extract.web_scraping import get_webdriver
+from utils import aws
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import json
-import boto3
-from contextlib import contextmanager
-import os
 
 # connect to localstack s3
-s3_config = {
-    'service_name': 's3',
-    'aws_access_key_id': os.getenv("LOCALSTACK_ACCESS_KEY"),
-    'aws_secret_access_key': os.getenv("LOCALSTACK_SECRET_KEY"),
-    'endpoint_url': os.getenv("LOCALSTACK_ENDPOINT")
-}
-
-s3 = boto3.client(**s3_config)
+s3 = aws.aws_client(
+    config=aws.aws_config('s3', localstack=True)
+)
 
 # download backfill_60_in_60.json from s3
 s3.download_file(
@@ -33,23 +28,12 @@ urls = {
     2024: "https://kslsports.com/518377/hans-scottys-2024-60-in-60-list/"
 }
 
-
-@contextmanager
-def get_webdriver():
-    driver = webdriver.Chrome()
-    try:
-        yield driver
-    finally:
-        driver.quit()
-
-
 def process_team_name(team_name):
     if team_name == "Weber":
         return "Weber State"
     elif team_name == "USU":
         return "Utah State"
     return team_name.split(",")[0]
-
 
 def process_player_name(p, year):
     team_name = process_team_name(p.split("(")[1].split(")")[0].strip())
@@ -80,12 +64,12 @@ with get_webdriver() as driver:
             player_data.append(process_player_name(p, year))
 
 # write player_list to json file
-with open("python/60_in_60/60_in_60_list.json", "w") as f:
+with open("pipelines/web_scraping/ksl/60_in_60/60_in_60_list.json", "w") as f:
     json.dump(player_data, f, indent=4)
 
 # upload 60_in_60_list.json to s3
 s3.upload_file(
-    Filename="python/60_in_60/60_in_60_list.json",
     Bucket="college-football",
-    Key="data/web_scraping/ksl/60_in_60_list.json"
+    Key="data/web_scraping/ksl/60_in_60_list.json",
+    Filename="pipelines/web_scraping/ksl/60_in_60/60_in_60_list.json"
 )
