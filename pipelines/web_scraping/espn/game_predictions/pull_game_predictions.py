@@ -19,7 +19,7 @@ games_dict = {}
 for g in games:
     week = g["week"]
     game_id = g["id"]
-    
+
     if week > 1:
         if week in games_dict:
             games_dict[week].append(game_id)
@@ -28,9 +28,8 @@ for g in games:
 
 
 fpi_game_predictions = {} # Initialize retry_list with all game_ids
-for w in games_dict:
+for w, game_ids in games_dict.items():
     print(f"Processing Week: {w}")
-    game_ids = games_dict[w]
     retry_list = game_ids.copy()
 
     while retry_list:
