@@ -61,7 +61,7 @@ s3 = aws.aws_client(
 s3.upload_fileobj(
     Fileobj=BytesIO(json.dumps(fpi_game_predictions).encode()),
     Bucket="college-football",
-    Key="data/espn/fpi_game_predictions/2024_week_2.json"
+    Key="data/espn/fpi_game_predictions/2024_week_2l.json"
 )
 
 
