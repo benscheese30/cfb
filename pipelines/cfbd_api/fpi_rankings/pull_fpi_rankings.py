@@ -1,12 +1,13 @@
-from utils import cfbd
-from utils import aws
+from utils import cfbd, aws
 import json
 from io import BytesIO
-from datetime import datetime
+
+year = 2024
+game_week = cfbd.get_week(year)
 
 fpi_rankings = cfbd.get_data(
     endpoint="/ratings/fpi",
-    params={"year": 2024}
+    params={"year": year}
 )
 
 # upload to s3
@@ -17,7 +18,5 @@ s3 = aws.aws_client(
 s3.upload_fileobj(
     Fileobj=BytesIO(json.dumps(fpi_rankings).encode()),
     Bucket="college-football",
-    Key="data/espn/fpi_rankings/2024_week_1.json"
+    Key=f"data/espn/fpi_rankings/{year}_week_{game_week}.json"
 )
-
-# TODO: make this ouput dynamic based on the week using the /calendar endpoint
