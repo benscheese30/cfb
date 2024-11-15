@@ -3,7 +3,7 @@ import os
 import requests
 import logging
 import json
-import time
+import datetime
 
 # setup logging message with timestamp
 logging.basicConfig(
@@ -52,4 +52,21 @@ def get_params(endpoint, js="resources/cfbd_endpoint_details.json"):
 
     print(param_structure)
     return param_dict
+
+
+def get_week(year):
+    global week
+    calendar = get_data(
+        endpoint="/calendar",
+        params={"year": year}
+    )
+
+    current_time = datetime.datetime.now().isoformat()
+
+    for c in calendar:
+        if c["firstGameStart"] < current_time < c["lastGameStart"]:
+            week = c["week"]
+            break
+
+    return week
 
