@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: cfb_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: cfb_data
+      POSTGRES_USER: cfb_user
+      POSTGRES_PASSWORD: cfb_password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./docker/postgres/data:/var/lib/postgresql/data/pgdata
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d
+      - ./docker/postgres/backups:/backups
+    networks:
+      - cfb_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cfb_user -d cfb_data"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Optional: pgAdmin for database management
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: cfb_pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@cfb.local
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "8080:80"
+    volumes:
+      - ./docker/pgadmin:/var/lib/pgadmin
+    networks:
+      - cfb_network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    profiles:
+      - admin
+
+networks:
+  cfb_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local

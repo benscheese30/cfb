@@ -6,6 +6,11 @@ from utils import cfbd, aws
 from io import BytesIO
 import json
 
+# setting up the dynamodb client
+dynomodb = aws.aws_client(
+    aws.aws_config(service="dynamodb")
+)
+
 # get the current week
 year = 2024
 game_week = cfbd.get_week(year)
@@ -30,6 +35,7 @@ for g in games:
         else:
             games_dict[week] = [game_id]
 
+# games_dict[game_week] = games_dict[game_week][0:5]
 
 fpi_game_predictions = {} # Initialize retry_list with all game_ids
 for w, game_ids in games_dict.items():
@@ -49,13 +55,18 @@ for w, game_ids in games_dict.items():
                 )
 
                 preds = game_prediction.text.split('\n')
+                home = float(preds[2])
+                away = float(preds[0])
 
-                fpi_game_predictions[game_id] = [float(preds[2]), float(preds[0])]
+                fpi_game_predictions[game_id] = [home, away]
+
         except Exception as e:
             print(f"Error processing Game ID: {game_id}")
             retry_list.append(game_id)  # Add the game_id back to retry_list for retrying
 
 print("All game_ids processed successfully.")
+
+
 
 s3 = aws.aws_client(
     aws.aws_config(service="s3", localstack=True)

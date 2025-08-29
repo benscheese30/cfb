@@ -55,7 +55,6 @@ def get_params(endpoint, js="resources/cfbd_endpoint_details.json"):
 
 
 def get_week(year):
-    global week
     calendar = get_data(
         endpoint="/calendar",
         params={"year": year}
@@ -65,8 +64,5 @@ def get_week(year):
 
     for c in calendar:
         if c["firstGameStart"] < current_time < c["lastGameStart"]:
-            week = c["week"]
-            break
-
-    return week
+            return c["week"]
 
